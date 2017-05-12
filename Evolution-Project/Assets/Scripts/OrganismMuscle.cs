@@ -59,7 +59,7 @@ public class OrganismMuscle : MonoBehaviour
         {
             t -= interval;
             contracted = true;
-            joint.distance = contractedDistance; // Contract
+			joint.distance = contractedDistance * relaxedDistance; // Contract
         }
     }
 

@@ -18,7 +18,7 @@ public class Joint : MonoBehaviour
     [SerializeField] private SpriteRenderer weightDisplay;
     [SerializeField] private SpriteRenderer bouncinessDisplay;
 
-    public Rigidbody2D rigidbody2D { get; private set; }
+    public Rigidbody2D JointRigidbody { get; private set; }
 
     public float Radius
     {
@@ -27,8 +27,8 @@ public class Joint : MonoBehaviour
 
     void Awake()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
-        rigidbody2D.mass = weight;
+        JointRigidbody = GetComponent<Rigidbody2D>();
+        JointRigidbody.mass = weight;
 
         PhysicsMaterial2D mat = new PhysicsMaterial2D();
         mat.friction = friction;

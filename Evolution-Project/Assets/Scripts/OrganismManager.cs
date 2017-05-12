@@ -23,7 +23,6 @@ public class OrganismManager : MonoBehaviour
 
     private StringBuilder outputBuilder;
 
-	// Use this for initialization
 	void Start ()
 	{
 	    outputBuilder = new StringBuilder();
@@ -58,15 +57,15 @@ public class OrganismManager : MonoBehaviour
             OrganismSetup setup;
             if (parents == null)
             {
-                setup = originalSetup;
+				setup = randomizer.FullRandomOrganism(originalSetup);
             }
             else
             {
-                setup = parents[Random.Range(0, parents.Count)].setup;
+				setup = randomizer.Randomize(parents[Random.Range(0, parents.Count)].setup);
             }
 
             newOrganisms.Add(
-                SpawnOrganism(transform.position, randomizer.Randomize(setup))
+				SpawnOrganism(transform.position, setup)
                 );
         }
 

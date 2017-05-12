@@ -30,7 +30,7 @@ public class Muscle : MonoBehaviour
     {
         ColorManager.GetMuscleColors(this, sprite);
         joint = jointA.gameObject.AddComponent<SpringJoint2D>();
-        joint.connectedBody = jointB.rigidbody2D;
+        joint.connectedBody = jointB.JointRigidbody;
         joint.frequency = frequency;
 
         t = Mathf.Repeat(startPhase, activeTime + interval);

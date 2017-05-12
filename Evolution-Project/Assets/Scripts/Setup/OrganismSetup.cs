@@ -8,6 +8,12 @@ public class OrganismSetup
 	public bool mutated = false;
 	public string method = "";
 
+	public string Code{
+		get{
+			return "J" + joints.Count + "M" + muscles.Count;
+		}
+	}
+
     public List<JointSetup> joints;
     public List<MuscleSetup> muscles;
 }

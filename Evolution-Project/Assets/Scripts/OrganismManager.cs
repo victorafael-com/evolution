@@ -25,8 +25,11 @@ public class OrganismManager : MonoBehaviour
 
     private StringBuilder outputBuilder;
 
+	private Dictionary<string, Transform> spawnGroups;
+
 	void Start ()
 	{
+		spawnGroups = new Dictionary<string, Transform> ();
 	    outputBuilder = new StringBuilder();
         Simulate(null);
 	}
@@ -83,6 +86,18 @@ public class OrganismManager : MonoBehaviour
         Invoke("EndSimulation", simulationTime);
     }
 
+	private Transform GetOrganismFamilyGroup(OrganismSetup setup){
+		string code = setup.Code;
+		if (spawnGroups.ContainsKey (code)) {
+			return spawnGroups [code];
+		} else {
+			GameObject g = new GameObject (code);
+			g.transform.position = Vector3.zero;
+			spawnGroups.Add (code, g.transform);
+			return g.transform;
+		}
+	}
+
 	public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup, int zIndex = 0)
     {
 		GameObject g = new GameObject("Organism "+setup.method);
@@ -131,6 +146,7 @@ public class OrganismManager : MonoBehaviour
         }
 
 		organism.transform.position = pos + new Vector3(boundaries.center.x, -boundaries.yMin) + Vector3.forward * zIndex * zOffset;
+		organism.transform.parent = GetOrganismFamilyGroup (setup);
         organism.setup = setup;
         return organism;
     }

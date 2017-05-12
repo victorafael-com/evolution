@@ -40,12 +40,11 @@ public class OrganismMuscle : MonoBehaviour
         }
         else
         {
-            joint.distance = contractedDistance;
+			joint.distance = contractedDistance * relaxedDistance;
         }
 
         float minDistance = jointA.Radius + jointB.Radius;
-        contractedDistance = Mathf.Max(contractedDistance, minDistance);
-        relaxedDistance = Mathf.Max(relaxedDistance, contractedDistance);
+		contractedDistance = Mathf.Max(contractedDistance * relaxedDistance, minDistance) / relaxedDistance;
     }
 
     public void Update()

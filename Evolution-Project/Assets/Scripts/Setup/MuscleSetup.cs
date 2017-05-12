@@ -13,6 +13,10 @@ public class MuscleSetup : ISetup<OrganismMuscle>
 	public float frequency;
 	public float startPhase;
 
+	public bool Match(int a, int b){
+		return (a == jointA && b == jointB) || (a == jointB && b == jointA);
+	}
+
 	public void Apply(OrganismMuscle muscle)
 	{
 		muscle.activeTime = activeTime;

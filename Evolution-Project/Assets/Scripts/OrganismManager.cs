@@ -90,9 +90,11 @@ public class OrganismManager : MonoBehaviour
 
         Rect boundaries = new Rect(0,0,0,0);
 
-        for (int i = 0; i < setup.joints.Length; i++)
+		for (int i = 0; i < setup.joints.Count; i++)
         {
             JointSetup s = setup.joints[i];
+			if (s == null)
+				continue;
 
             g = Instantiate<GameObject>(jointPrefab);
             g.transform.parent = organism.transform;
@@ -112,16 +114,18 @@ public class OrganismManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < setup.muscles.Length; i++)
+		for (int i = 0; i < setup.muscles.Count; i++)
         {
             MuscleSetup s = setup.muscles[i];
+
+			if (setup.joints [s.jointA] == null || setup.joints [s.jointB] == null)
+				continue;
 
             g = Instantiate<GameObject>(musclePrefab);
             g.transform.parent = organism.transform;
 
             OrganismMuscle muscle = g.GetComponent<OrganismMuscle>();
             s.Apply(muscle);
-
             muscle.jointA = organism.joints[s.jointA];
             muscle.jointB = organism.joints[s.jointB];
         }

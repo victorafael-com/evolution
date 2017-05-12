@@ -3,6 +3,6 @@
 public interface IRandomizer<T>
 {
 	T Randomize(T original);
-	T FullRandomize(T original);
+	T FullRandomize();
 }
 

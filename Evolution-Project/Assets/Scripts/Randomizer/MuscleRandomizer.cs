@@ -24,11 +24,11 @@ public class MuscleRandomizer : IRandomizer<MuscleSetup>{
 		return result;
 	}
 
-	public MuscleSetup FullRandomize(MuscleSetup setup){
+	public MuscleSetup FullRandomize(){
 		MuscleSetup result = new MuscleSetup ();
 
-		result.jointA = setup.jointA;
-		result.jointB = setup.jointB;
+		//result.jointA;
+		//result.jointB;
 
 		result.activeTime = activeTime.RandomVal;
 		result.interval = interval.RandomVal;

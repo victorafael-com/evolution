@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class OrganismSetup
 {
-    public JointSetup[] joints;
-    public MuscleSetup[] muscles;
+	public bool mutated = false;
+    public List<JointSetup> joints;
+    public List<MuscleSetup> muscles;
 }

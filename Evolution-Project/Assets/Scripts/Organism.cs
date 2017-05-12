@@ -26,4 +26,17 @@ public class Organism : MonoBehaviour
             }
         }
     }
+
+	void OnDrawGizmos(){
+		if (Application.isPlaying && setup != null) {
+			Vector3 pos = new Vector3 (MaxDistance, transform.position.z, 0);
+			if (setup.mutated) {
+				Gizmos.color = Color.green;
+				Gizmos.DrawWireSphere (pos, 0.07f);
+			} else {
+				Gizmos.color = Color.white;
+				Gizmos.DrawLine (pos, pos + Vector3.up * 0.05f);
+			}
+		}
+	}
 }

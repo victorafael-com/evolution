@@ -8,6 +8,9 @@ public class JointRandomizer : IRandomizer<JointSetup>{
 
 	public JointSetup Randomize(JointSetup setup)
 	{
+		if (setup == null)
+			return null;
+		
 		JointSetup result = new JointSetup();
 
 		result.position.x = position.Randomize(setup.position.x);
@@ -20,10 +23,11 @@ public class JointRandomizer : IRandomizer<JointSetup>{
 		return result;
 	}
 
-	public JointSetup FullRandomize(JointSetup setup){
+	public JointSetup FullRandomize(){
 		JointSetup result = new JointSetup ();
 
-		result.position = setup.position;
+		result.position.x = position.RandomVal;
+		result.position.y = position.RandomVal;
 		result.size = size.RandomVal;
 		result.weight = weight.RandomVal;
 		result.friction = friction.RandomVal;

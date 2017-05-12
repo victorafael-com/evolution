@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.AccessControl;
 using UnityEngine;
 
-public class Joint : MonoBehaviour
+public class OrganismJoint : MonoBehaviour
 {
     public const float JointUnitSize = 32f / 100;
 

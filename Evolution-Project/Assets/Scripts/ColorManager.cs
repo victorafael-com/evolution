@@ -22,14 +22,14 @@ public class ColorManager : MonoBehaviour
         instance = this;
     }
 
-    public static void GetJointColors(Joint joint, SpriteRenderer friction, SpriteRenderer weight, SpriteRenderer bounciness)
+    public static void GetJointColors(OrganismJoint joint, SpriteRenderer friction, SpriteRenderer weight, SpriteRenderer bounciness)
     {
         friction.color = instance.GetColor(instance.frictionRange, instance.maxFriction, joint.friction);
         weight.color = instance.GetColor(instance.weightRange, instance.maxWeight, joint.weight);
         bounciness.color = instance.GetColor(instance.bouncinessRange, instance.maxBounciness, joint.bounciness);
     }
 
-    public static void GetMuscleColors(Muscle muscle, SpriteRenderer activity)
+    public static void GetMuscleColors(OrganismMuscle muscle, SpriteRenderer activity)
     {
         activity.color = instance.GetColor(instance.activityRange, instance.maxActivity, muscle.frequency);
     }

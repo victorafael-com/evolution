@@ -5,13 +5,13 @@ using UnityEngine;
 public class Organism : MonoBehaviour
 {
     public OrganismSetup setup;
-    public List<Joint> joints;
+    public List<OrganismJoint> joints;
 
     public float MaxDistance { get; private set; }
 
     void Awake()
     {
-        joints = new List<Joint>();
+        joints = new List<OrganismJoint>();
         MaxDistance = 0;
     }
 

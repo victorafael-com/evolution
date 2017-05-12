@@ -95,7 +95,7 @@ public class OrganismManager : MonoBehaviour
             g = Instantiate<GameObject>(jointPrefab);
             g.transform.parent = organism.transform;
 
-            Joint joint = g.GetComponent<Joint>();
+            OrganismJoint joint = g.GetComponent<OrganismJoint>();
             s.Apply(joint);
 
             organism.joints.Add(joint);
@@ -117,7 +117,7 @@ public class OrganismManager : MonoBehaviour
             g = Instantiate<GameObject>(musclePrefab);
             g.transform.parent = organism.transform;
 
-            Muscle muscle = g.GetComponent<Muscle>();
+            OrganismMuscle muscle = g.GetComponent<OrganismMuscle>();
             s.Apply(muscle);
 
             muscle.jointA = organism.joints[s.jointA];

@@ -18,7 +18,7 @@ public class JointSetup
     public float friction;
     public float bounciness;
 
-    public void Apply(Joint joint)
+    public void Apply(OrganismJoint joint)
     {
         joint.bounciness = bounciness;
         joint.friction = friction;
@@ -41,7 +41,7 @@ public class MuscleSetup
     public float frequency;
     public float startPhase;
 
-    public void Apply(Muscle muscle)
+    public void Apply(OrganismMuscle muscle)
     {
         muscle.activeTime = activeTime;
         muscle.interval = interval;

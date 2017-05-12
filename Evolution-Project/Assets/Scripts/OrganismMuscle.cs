@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.AccessControl;
 using UnityEngine;
 
-public class Muscle : MonoBehaviour
+public class OrganismMuscle : MonoBehaviour
 {
     [Header("Parameters")]
     public float activeTime;
@@ -14,8 +14,8 @@ public class Muscle : MonoBehaviour
     public float startPhase;
 
     [Header("Setup")]
-    public Joint jointA;
-    public Joint jointB;
+    public OrganismJoint jointA;
+    public OrganismJoint jointB;
 
     [Header("Elements")]
     public SpriteRenderer sprite;

@@ -14,8 +14,10 @@ public class OrganismManager : MonoBehaviour
     [SerializeField] private GameObject jointPrefab;
     [SerializeField] private GameObject musclePrefab;
 
+	[Header("Simulation")]
     public int ammount = 50;
     public float simulationTime = 30;
+	public float zOffset = 0.003f;
     [Range(0, 1)]
     public float survivors = 0.1f;
 
@@ -65,7 +67,7 @@ public class OrganismManager : MonoBehaviour
             }
 
             newOrganisms.Add(
-				SpawnOrganism(transform.position, setup)
+				SpawnOrganism(transform.position, setup, i)
                 );
         }
 
@@ -81,7 +83,7 @@ public class OrganismManager : MonoBehaviour
         Invoke("EndSimulation", simulationTime);
     }
 
-    public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup)
+	public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup, int zIndex = 0)
     {
         GameObject g = new GameObject("Organism");
         Organism organism = g.AddComponent<Organism>();
@@ -124,7 +126,7 @@ public class OrganismManager : MonoBehaviour
             muscle.jointB = organism.joints[s.jointB];
         }
 
-        organism.transform.position = pos + new Vector3(boundaries.center.x, -boundaries.yMin);
+		organism.transform.position = pos + new Vector3(boundaries.center.x, -boundaries.yMin) + Vector3.forward * zIndex * zOffset;
         organism.setup = setup;
         return organism;
     }

@@ -102,7 +102,7 @@ public class OrganismRandomizer
 			maxMuscles += i;
 		}
 
-		if (maxMuscles >= organism.muscles.Count) {
+		if (organism.muscles.Count >= maxMuscles) {
 			//no room for new muscles
 			if (fallbackFromMuscleToJoint) {
 				CreateJoint (organism);
@@ -115,7 +115,6 @@ public class OrganismRandomizer
 		}
 		JointSetup[] jointsA = new List<JointSetup> (organism.joints).OrderBy(s => Random.value).ToArray();
 		JointSetup[] jointsB = new List<JointSetup> (organism.joints).OrderBy(s => Random.value).ToArray();
-		Debug.Log ("searching on jointss " + joints);
 		for (int a = 0; a < joints; a++) {
 			for (int b = 0; b < joints; b++) {
 				if (jointsA[a] == jointsB[b])
@@ -128,13 +127,11 @@ public class OrganismRandomizer
 				for (int i = 0; i < organism.muscles.Count; i++) {
 					if (organism.muscles [i].Match (ja, jb)) {
 						found = true;
-						Debug.Log ("Found muscle already using " + ja + " " + jb);
 						break;
 					}
 				}
 
 				if (!found) {
-
 					MuscleSetup newMuscle = muscle.FullRandomize ();
 					newMuscle.jointA = ja;
 					newMuscle.jointB = jb;
@@ -149,12 +146,10 @@ public class OrganismRandomizer
 	}
 	public void RemoveJoint(OrganismSetup organism){
 		int lostJoint = Random.Range (0, organism.joints.Count);
-		Debug.Log ("Removing random joint: "+lostJoint);
 
 		RemoveSpecificJoint (organism, lostJoint);
 	}
 	private void RemoveSpecificJoint(OrganismSetup organism, int removed){
-		Debug.Log ("Removed specific joint: "+removed);
 		organism.joints.RemoveAt (removed);
 
 		//Removes the empty reference inside the organism and muscles which references to it.
@@ -176,7 +171,6 @@ public class OrganismRandomizer
 	}
 	public void RemoveMuscle(OrganismSetup organism){
 		int removedMuscle = Random.Range (0, organism.muscles.Count);
-		Debug.Log ("Removed Muscle");
 		//Get the joints attached to the muscle
 		int a = organism.muscles [removedMuscle].jointA;
 		int b = organism.muscles [removedMuscle].jointB;

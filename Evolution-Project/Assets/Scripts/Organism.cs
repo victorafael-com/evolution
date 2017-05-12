@@ -8,6 +8,9 @@ public class Organism : MonoBehaviour
     public List<OrganismJoint> joints;
 
     public float MaxDistance { get; private set; }
+	public float MaxX{get; private set;}
+	public float MinX{get; private set;}
+	public float MaxY{get; private set;}
 
     void Awake()
     {
@@ -17,14 +20,28 @@ public class Organism : MonoBehaviour
 
     void Update()
     {
+		MaxX = MaxDistance - 20;
+		MinX = MaxDistance + 20;
+		MaxY = 0;
         for (int i = 0; i < joints.Count; i++)
         {
             float pos = joints[i].transform.position.x + joints[i].Radius;
-            if (pos > MaxDistance)
+			float minPos = joints [i].transform.position.x - joints [i].Radius;
+			float posY = joints [i].transform.position.y + joints [i].Radius;
+			if (pos > MaxX)
             {
-                MaxDistance = pos;
+				MaxX = pos;
             }
+			if (minPos < MinX) {
+				MinX = minPos;
+			}
+			if (posY > MaxY) {
+				MaxY = posY;
+			}
         }
+		if (MaxX > MaxDistance) {
+			MaxDistance = MaxX;
+		}
     }
 
 	void OnDrawGizmos(){

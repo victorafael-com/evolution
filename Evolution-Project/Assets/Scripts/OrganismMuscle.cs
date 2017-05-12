@@ -51,13 +51,13 @@ public class OrganismMuscle : MonoBehaviour
     {
         t += Time.deltaTime;
         if (contracted && t > activeTime){
-            t -= activeTime;
+			t = 0;//-= activeTime;
             contracted = false;
             joint.distance = relaxedDistance; // Expand
         }
         else if(!contracted && t > interval)
         {
-            t -= interval;
+			t = 0;//-= interval;
             contracted = true;
 			joint.distance = contractedDistance * relaxedDistance; // Contract
         }

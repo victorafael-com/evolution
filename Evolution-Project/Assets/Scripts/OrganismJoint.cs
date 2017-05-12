@@ -27,19 +27,20 @@ public class OrganismJoint : MonoBehaviour
 
     void Awake()
     {
-        JointRigidbody = GetComponent<Rigidbody2D>();
-        JointRigidbody.mass = weight;
-
-        PhysicsMaterial2D mat = new PhysicsMaterial2D();
-        mat.friction = friction;
-        mat.bounciness = bounciness;
-
-        GetComponent<Collider2D>().sharedMaterial = mat;
+		JointRigidbody = GetComponent<Rigidbody2D>();
     }
 
 	void Start ()
 	{
+		JointRigidbody.mass = weight;
+
 	    ColorManager.GetJointColors(this, frictionDisplay, weightDisplay, bouncinessDisplay);
-	    bouncinessDisplay.transform.parent.localScale = Vector3.one * bounciness;
+		bouncinessDisplay.transform.parent.localScale = Vector3.one * bounciness;
+
+		PhysicsMaterial2D mat = new PhysicsMaterial2D();
+		mat.friction = friction;
+		mat.bounciness = bounciness;
+
+		GetComponent<Collider2D>().sharedMaterial = mat;
 	}
 }

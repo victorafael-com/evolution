@@ -59,7 +59,7 @@ public class OrganismManager : MonoBehaviour
             OrganismSetup setup;
             if (parents == null)
             {
-				setup = randomizer.FullRandomOrganism(originalSetup);
+				setup = randomizer.Randomize(originalSetup);
             }
             else
             {

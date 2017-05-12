@@ -6,6 +6,8 @@ using UnityEngine;
 public class OrganismSetup
 {
 	public bool mutated = false;
+	public string method = "";
+
     public List<JointSetup> joints;
     public List<MuscleSetup> muscles;
 }

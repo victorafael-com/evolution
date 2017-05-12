@@ -17,4 +17,14 @@ public class JointSetup : ISetup<OrganismJoint>
 		joint.weight = weight;
 		joint.transform.localPosition = position;
 	}
+
+	public JointSetup Lerp(JointSetup to, float lerp){
+		return new JointSetup(){
+			position = Vector2.Lerp(position, to.position, lerp),
+			size = Mathf.Lerp(size, to.size, lerp),
+			weight = Mathf.Lerp(weight, to.weight, lerp),
+			friction = Mathf.Lerp(friction, to.friction, lerp),
+			bounciness = Mathf.Lerp(bounciness, to.bounciness, lerp)
+		};
+	}
 }

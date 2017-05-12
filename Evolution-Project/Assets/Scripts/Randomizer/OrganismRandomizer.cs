@@ -18,6 +18,7 @@ public class OrganismRandomizer
 	[Tooltip("Creates a Joint if no muscle is available to be created at the Organism")]
 	public bool fallbackFromMuscleToJoint = true;
 	[Range(0,1)] public float removeMuscleWeight = 0.5f;
+	[Range(0,1)] public float splitMuscleWeight = 1;
 
     public OrganismSetup Randomize(OrganismSetup setup)
     {
@@ -63,22 +64,33 @@ public class OrganismRandomizer
 	public void MutateOrganism(OrganismSetup organism){
 		organism.mutated = true;
 
-		float sum = createJointWeight + createMuscleWeight + removeMuscleWeight + removeJointWeight;
+		float sum = createJointWeight + createMuscleWeight + removeMuscleWeight + removeJointWeight + splitMuscleWeight;
 		float rand = Random.value * sum;
 
 		if (rand < createJointWeight) {
 			CreateJoint (organism);
+			organism.method = "CreateJoint";
 			return;
 		}
 		rand -= createJointWeight;
 		if (rand < createMuscleWeight) {
 			CreateMuscle (organism);
+			organism.method = "CreateMuscle";
 			return;
 		}
 		rand -= createMuscleWeight;
+
+		if (rand < splitMuscleWeight) {
+			organism.method = "SplitMuscle";
+			SplitMuscle (organism);
+			return;
+		}
+		rand -= splitMuscleWeight;
 		if (rand < removeJointWeight) {
+			organism.method = "RemoveJoint";
 			RemoveJoint (organism);
 		} else {
+			organism.method = "RemoveMuscle";
 			RemoveMuscle (organism);
 		}
 	}
@@ -87,7 +99,7 @@ public class OrganismRandomizer
 		int jointA = Random.Range (0, organism.joints.Count); //To which joint the new joint will be attached?
 		int jointB = organism.joints.Count; //The new joint ID;
 
-		JointSetup newJoint = joint.FullRandomize ();
+		JointSetup newJoint = joint.Randomize(organism.joints[jointA]);
 		MuscleSetup newMuscle = muscle.FullRandomize ();
 		newMuscle.jointA = jointA;
 		newMuscle.jointB = jointB;
@@ -169,6 +181,7 @@ public class OrganismRandomizer
 		}
 		organism.muscles = fixedMuscles;
 	}
+
 	public void RemoveMuscle(OrganismSetup organism){
 		int removedMuscle = Random.Range (0, organism.muscles.Count);
 		//Get the joints attached to the muscle
@@ -202,5 +215,28 @@ public class OrganismRandomizer
 			}
 			RemoveSpecificJoint (organism, b);
 		}
+	}
+
+	private void SplitMuscle(OrganismSetup organism){
+		if (organism.muscles.Count == 0)
+			return;
+		
+		MuscleSetup muscleA = organism.muscles.OrderBy (v => Random.value).FirstOrDefault ();
+		float lerp = Random.Range (0.4f, 0.6f); //Where the slice will happen on the muscle
+		MuscleSetup muscleB = muscle.Randomize(muscleA);
+
+		muscleA.relaxedDistance *= lerp;
+		muscleB.relaxedDistance *= (1 - lerp);
+
+		JointSetup newJoint = joint.Randomize (
+			organism.joints[muscleA.jointA].Lerp(organism.joints[muscleA.jointB], lerp)
+		);
+
+		int jointPos = organism.joints.Count;
+		muscleA.jointB = jointPos;
+		muscleB.jointA = jointPos;
+
+		organism.joints.Add (newJoint);
+		organism.muscles.Add (muscleB);
 	}
 }

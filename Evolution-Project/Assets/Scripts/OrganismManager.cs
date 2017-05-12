@@ -21,7 +21,7 @@ public class OrganismManager : MonoBehaviour
     [Range(0, 1)]
     public float survivors = 0.1f;
 
-    private List<Organism> organisms;
+	public List<Organism> Organisms{ get; private set; }
 
     private StringBuilder outputBuilder;
 
@@ -38,7 +38,7 @@ public class OrganismManager : MonoBehaviour
 
     void EndSimulation()
     {
-        List<Organism> remaining = organisms.OrderByDescending(x => x.MaxDistance)
+        List<Organism> remaining = Organisms.OrderByDescending(x => x.MaxDistance)
             .Take(Mathf.RoundToInt(survivors * ammount))
             .ToList();
 
@@ -71,21 +71,21 @@ public class OrganismManager : MonoBehaviour
                 );
         }
 
-        if (organisms != null)
+        if (Organisms != null)
         {
-            for (int i = 0; i < organisms.Count; i++)
+            for (int i = 0; i < Organisms.Count; i++)
             {
-                Destroy(organisms[i].gameObject);
+                Destroy(Organisms[i].gameObject);
             }
         }
-        organisms = newOrganisms;
+        Organisms = newOrganisms;
 
         Invoke("EndSimulation", simulationTime);
     }
 
 	public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup, int zIndex = 0)
     {
-        GameObject g = new GameObject("Organism");
+		GameObject g = new GameObject("Organism "+setup.method);
         Organism organism = g.AddComponent<Organism>();
 
         Rect boundaries = new Rect(0,0,0,0);

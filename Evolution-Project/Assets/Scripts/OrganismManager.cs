@@ -5,9 +5,12 @@ using System.Security.AccessControl;
 using UnityEngine;
 using System.Linq;
 using System.Text;
+using UnityEngine.Events;
 
 public class OrganismManager : MonoBehaviour
 {
+	public event UnityAction onRestartSimulation;
+
     public OrganismSetup originalSetup;
     public OrganismRandomizer randomizer;
     [Header("Prefabs")]
@@ -51,6 +54,8 @@ public class OrganismManager : MonoBehaviour
             builder.Append(remaining[i].MaxDistance+"\t");
         }
         outputBuilder.AppendLine(builder.ToString());
+		if (onRestartSimulation != null)
+			onRestartSimulation ();
         Simulate(remaining);
     }
 
@@ -102,52 +107,9 @@ public class OrganismManager : MonoBehaviour
     {
 		GameObject g = new GameObject("Organism "+setup.method);
         Organism organism = g.AddComponent<Organism>();
-
-        Rect boundaries = new Rect(0,0,0,0);
-
-		for (int i = 0; i < setup.joints.Count; i++)
-        {
-            JointSetup s = setup.joints[i];
-			if (s == null)
-				continue;
-
-            g = Instantiate<GameObject>(jointPrefab);
-            g.transform.parent = organism.transform;
-
-            OrganismJoint joint = g.GetComponent<OrganismJoint>();
-            s.Apply(joint);
-
-            organism.joints.Add(joint);
-
-            Rect jointBounds = new Rect(s.position - Vector2.one * joint.Radius, new Vector2(joint.Radius * 2, joint.Radius * 2));
-            if (i == 0 || jointBounds.xMin < boundaries.xMin) boundaries.xMin = jointBounds.xMin;
-            if (i == 0 || jointBounds.xMax > boundaries.xMax) boundaries.xMax = jointBounds.xMax;
-            if (i == 0 || jointBounds.yMin < boundaries.yMin)
-            {
-                boundaries.yMin = jointBounds.yMin;
-                boundaries.yMax = jointBounds.yMax;
-            }
-        }
-
-		for (int i = 0; i < setup.muscles.Count; i++)
-        {
-            MuscleSetup s = setup.muscles[i];
-
-			if (setup.joints [s.jointA] == null || setup.joints [s.jointB] == null)
-				continue;
-
-            g = Instantiate<GameObject>(musclePrefab);
-            g.transform.parent = organism.transform;
-
-            OrganismMuscle muscle = g.GetComponent<OrganismMuscle>();
-            s.Apply(muscle);
-            muscle.jointA = organism.joints[s.jointA];
-            muscle.jointB = organism.joints[s.jointB];
-        }
-
-		organism.transform.position = pos + new Vector3(boundaries.center.x, -boundaries.yMin) + Vector3.forward * zIndex * zOffset;
+		organism.setup = setup;
+		organism.Spawn (pos, jointPrefab, musclePrefab);
 		organism.transform.parent = GetOrganismFamilyGroup (setup);
-        organism.setup = setup;
         return organism;
     }
 }

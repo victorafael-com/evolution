@@ -28,6 +28,8 @@ public class CameraControl : MonoBehaviour {
 			enabled = false;
 			return;
 		}
+
+		manager.onRestartSimulation += OnRestartSimulation;
 		cam = GetComponent<Camera> ();
 
 		startSize = cam.orthographicSize;
@@ -41,6 +43,12 @@ public class CameraControl : MonoBehaviour {
 
 		cam.targetTexture = texture;
 		imgRenderer.texture = texture;
+	}
+
+	void OnRestartSimulation ()
+	{
+		transform.position = startPos;
+		cam.orthographicSize = startSize;
 	}
 	
 	// Update is called once per frame

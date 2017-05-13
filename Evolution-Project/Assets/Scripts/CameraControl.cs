@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class CameraControl : MonoBehaviour {
 	[Range(0,1)]
@@ -13,10 +14,12 @@ public class CameraControl : MonoBehaviour {
 	private Vector3 startPos;
 	private float startSize;
 	public float yOffset = 0.2f;
-
 	public float padding = 0.4f;
-
 	public float easingSpeed = 5;
+
+	[Header("Canvas Positioning")]
+	public RawImage imgRenderer;
+	private Vector2 desiredSize;
 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +34,13 @@ public class CameraControl : MonoBehaviour {
 		startPos = cam.transform.position;
 
 		watchAmmount = (int)(manager.ammount * watchedPercent);
+
+		desiredSize = imgRenderer.rectTransform.sizeDelta;
+
+		RenderTexture texture = new RenderTexture ((int)desiredSize.x, (int)desiredSize.y, 16);
+
+		cam.targetTexture = texture;
+		imgRenderer.texture = texture;
 	}
 	
 	// Update is called once per frame
@@ -43,7 +53,7 @@ public class CameraControl : MonoBehaviour {
 		float minX = organisms.Min (o => o.MinX) - padding;
 		float maxY = (organisms.Max (o => o.MaxY) + padding) * 0.5f; //Ortographic size behaves like "radius" :P
 
-		float ratio = (float)Screen.width / Screen.height;
+		float ratio = (float)desiredSize.x / desiredSize.y;
 
 		float Width = maxX - minX;
 		float Height = Mathf.Max( Width / (ratio * 2), maxY);

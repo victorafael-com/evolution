@@ -36,7 +36,6 @@ public class PrefabPool<T> where T:MonoBehaviour, IPoolBehaviour{
 		T ret = items [0];
 		items.RemoveAt (0);
 
-		poolRoot.name = prefab.name + " pool (" + items.Count + ")";
 		return ret;
 	}
 	public void Return(T g){

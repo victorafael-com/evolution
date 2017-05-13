@@ -33,6 +33,7 @@ public class OrganismJoint : MonoBehaviour, IPoolBehaviour
 	public void Dettach(){
 		JointRigidbody.velocity = Vector2.zero;
 		JointRigidbody.angularVelocity = 0;
+		JointRigidbody.isKinematic = true;
 	}
 	public void Process ()
 	{
@@ -46,6 +47,8 @@ public class OrganismJoint : MonoBehaviour, IPoolBehaviour
 		mat.bounciness = bounciness;
 
 		GetComponent<Collider2D>().sharedMaterial = mat;
+
+		JointRigidbody.isKinematic = false;
 
 		gameObject.SetActive (true);
 	}

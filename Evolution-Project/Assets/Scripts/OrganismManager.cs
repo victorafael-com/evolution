@@ -34,8 +34,8 @@ public class OrganismManager : MonoBehaviour
 
 	void Start ()
 	{
-		JointPool = new PrefabPool<OrganismJoint> (jointPrefab, 600, 50);
-		MusclePool = new PrefabPool<OrganismMuscle> (musclePrefab, 400, 50);
+		JointPool = new PrefabPool<OrganismJoint> (transform, jointPrefab, 600, 50);
+		MusclePool = new PrefabPool<OrganismMuscle> (transform, musclePrefab, 400, 50);
 
 		spawnGroups = new Dictionary<string, Transform> ();
 	    outputBuilder = new StringBuilder();

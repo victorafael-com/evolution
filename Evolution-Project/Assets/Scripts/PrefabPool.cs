@@ -9,14 +9,11 @@ public class PrefabPool<T> where T:MonoBehaviour, IPoolBehaviour{
 
 	private Transform poolRoot;
 
-	private static Transform MainPoolRoot;
+	private static Transform parentObject;
 
-	public PrefabPool(GameObject _prefab, int _startAmmount, int _incrementAmmount){
-		if (MainPoolRoot == null) {
-			MainPoolRoot = new GameObject ("Pool").transform;
-		}
+	public PrefabPool(Transform parentObject, GameObject _prefab, int _startAmmount, int _incrementAmmount){
 		poolRoot = new GameObject (_prefab.name + " pool").transform;
-		poolRoot.parent = MainPoolRoot;
+		poolRoot.parent = parentObject;
 		prefab = _prefab;
 		incrementCount = _incrementAmmount;
 		items = new List<T> ();
@@ -38,6 +35,8 @@ public class PrefabPool<T> where T:MonoBehaviour, IPoolBehaviour{
 		}
 		T ret = items [0];
 		items.RemoveAt (0);
+
+		poolRoot.name = prefab.name + " pool (" + items.Count + ")";
 		return ret;
 	}
 	public void Return(T g){

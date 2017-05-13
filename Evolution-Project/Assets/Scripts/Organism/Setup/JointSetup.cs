@@ -16,6 +16,7 @@ public class JointSetup : ISetup<OrganismJoint>
 		joint.size = size;
 		joint.weight = weight;
 		joint.transform.localPosition = position;
+		joint.Process ();
 	}
 
 	public JointSetup Lerp(JointSetup to, float lerp){

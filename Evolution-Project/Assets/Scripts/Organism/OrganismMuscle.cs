@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.AccessControl;
 using UnityEngine;
 
-public class OrganismMuscle : MonoBehaviour
+public class OrganismMuscle : MonoBehaviour, IPoolBehaviour
 {
     [Header("Parameters")]
     public float activeTime;
@@ -25,8 +25,12 @@ public class OrganismMuscle : MonoBehaviour
 
     private SpringJoint2D joint;
 
+	public void Dettach(){
+		joint.enabled = false;
+		Destroy (joint);
+	}
 
-    void Start()
+	public void Process()
     {
         ColorManager.GetMuscleColors(this, sprite);
         joint = jointA.gameObject.AddComponent<SpringJoint2D>();
@@ -45,6 +49,8 @@ public class OrganismMuscle : MonoBehaviour
 
         float minDistance = jointA.Radius + jointB.Radius;
 		contractedDistance = Mathf.Max(contractedDistance * relaxedDistance, minDistance) / relaxedDistance;
+
+		gameObject.SetActive (true);
     }
 
     public void Update()

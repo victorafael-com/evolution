@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.AccessControl;
 using UnityEngine;
 
-public class OrganismJoint : MonoBehaviour
+public class OrganismJoint : MonoBehaviour, IPoolBehaviour
 {
     public const float JointUnitSize = 32f / 100;
 
@@ -30,7 +30,11 @@ public class OrganismJoint : MonoBehaviour
 		JointRigidbody = GetComponent<Rigidbody2D>();
     }
 
-	void Start ()
+	public void Dettach(){
+		JointRigidbody.velocity = Vector2.zero;
+		JointRigidbody.angularVelocity = 0;
+	}
+	public void Process ()
 	{
 		JointRigidbody.mass = weight;
 
@@ -42,5 +46,7 @@ public class OrganismJoint : MonoBehaviour
 		mat.bounciness = bounciness;
 
 		GetComponent<Collider2D>().sharedMaterial = mat;
+
+		gameObject.SetActive (true);
 	}
 }

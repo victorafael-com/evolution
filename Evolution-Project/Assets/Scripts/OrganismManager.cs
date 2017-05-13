@@ -16,6 +16,8 @@ public class OrganismManager : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject jointPrefab;
     [SerializeField] private GameObject musclePrefab;
+	public static PrefabPool<OrganismJoint> JointPool;
+	public static PrefabPool<OrganismMuscle> MusclePool;
 
 	[Header("Simulation")]
     public int ammount = 50;
@@ -32,6 +34,9 @@ public class OrganismManager : MonoBehaviour
 
 	void Start ()
 	{
+		JointPool = new PrefabPool<OrganismJoint> (jointPrefab, 600, 50);
+		MusclePool = new PrefabPool<OrganismMuscle> (musclePrefab, 400, 50);
+
 		spawnGroups = new Dictionary<string, Transform> ();
 	    outputBuilder = new StringBuilder();
         Simulate(null);
@@ -83,7 +88,7 @@ public class OrganismManager : MonoBehaviour
         {
             for (int i = 0; i < Organisms.Count; i++)
             {
-                Destroy(Organisms[i].gameObject);
+				Organisms [i].Kill ();
             }
         }
         Organisms = newOrganisms;
@@ -108,7 +113,7 @@ public class OrganismManager : MonoBehaviour
 		GameObject g = new GameObject("Organism "+setup.method);
         Organism organism = g.AddComponent<Organism>();
 		organism.setup = setup;
-		organism.Spawn (pos, jointPrefab, musclePrefab);
+		organism.Spawn (pos);
 		organism.transform.parent = GetOrganismFamilyGroup (setup);
         return organism;
     }

@@ -7,6 +7,7 @@ public class Organism : MonoBehaviour
 {
     public OrganismSetup setup;
     public List<OrganismJoint> joints;
+	public List<OrganismMuscle> muscles;
 
     public float MaxDistance { get; private set; }
 	public float MaxX{get; private set;}
@@ -16,25 +17,32 @@ public class Organism : MonoBehaviour
     void Awake()
     {
         joints = new List<OrganismJoint>();
+		muscles = new List<OrganismMuscle> ();
 		gameObject.AddComponent<SortingGroup> ();
         MaxDistance = 0;
     }
 
-	public void Spawn(Vector3 pos, GameObject jointPrefab, GameObject musclePrefab){
+	public void Kill(){
+		for (int i = 0; i < joints.Count; i++) {
+			OrganismManager.JointPool.Return (joints[i]);
+		}
+		for (int i = 0; i < muscles.Count; i++) {
+			OrganismManager.MusclePool.Return (muscles[i]);
+		}
+		Destroy (gameObject);
+	}
+
+	public void Spawn(Vector3 pos){
 		Rect boundaries = new Rect(0,0,0,0);
-		GameObject g;
 		for (int i = 0; i < setup.joints.Count; i++)
 		{
 			JointSetup s = setup.joints[i];
 			if (s == null)
 				continue;
 
-			g = Instantiate<GameObject>(jointPrefab);
-			g.transform.parent = transform;
-
-			OrganismJoint joint = g.GetComponent<OrganismJoint>();
+			OrganismJoint joint = OrganismManager.JointPool.Take();
+			joint.transform.SetParent (transform);
 			s.Apply(joint);
-
 			joints.Add(joint);
 
 			Rect jointBounds = new Rect(s.position - Vector2.one * joint.Radius, new Vector2(joint.Radius * 2, joint.Radius * 2));
@@ -54,13 +62,14 @@ public class Organism : MonoBehaviour
 			if (setup.joints [s.jointA] == null || setup.joints [s.jointB] == null)
 				continue;
 
-			g = Instantiate<GameObject>(musclePrefab);
-			g.transform.parent = transform;
-
-			OrganismMuscle muscle = g.GetComponent<OrganismMuscle>();
-			s.Apply(muscle);
+			OrganismMuscle muscle = OrganismManager.MusclePool.Take();
 			muscle.jointA = joints[s.jointA];
 			muscle.jointB = joints[s.jointB];
+
+			muscle.transform.SetParent (transform);
+			s.Apply(muscle);
+			muscles.Add (muscle);
+
 		}
 
 		transform.position = pos + new Vector3(boundaries.center.x, -boundaries.yMin);

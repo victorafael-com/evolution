@@ -25,5 +25,7 @@ public class MuscleSetup : ISetup<OrganismMuscle>
 		muscle.relaxedDistance = relaxedDistance;
 		muscle.frequency = frequency;
 		muscle.startPhase = startPhase;
+
+		muscle.Process ();
 	}
 }

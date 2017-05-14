@@ -4,7 +4,6 @@ using System.IO;
 using System.Security.AccessControl;
 using UnityEngine;
 using System.Linq;
-using System.Text;
 using UnityEngine.Events;
 
 public class OrganismManager : MonoBehaviour
@@ -19,7 +18,6 @@ public class OrganismManager : MonoBehaviour
 	[SerializeField] private GameObject organismPrefab;
 	public static PrefabPool<OrganismJoint> JointPool;
 	public static PrefabPool<OrganismMuscle> MusclePool;
-	public static PrefabPool<Organism> OrganismPool;
 	public int maxOrganismCreatedPerFrame = 42;
 
 	[Header("Simulation")]
@@ -31,46 +29,55 @@ public class OrganismManager : MonoBehaviour
 
 	public List<Organism> Organisms{ get; private set; }
 
-    private StringBuilder outputBuilder;
-
 	private Dictionary<string, Transform> spawnGroups;
+
+	private GenerationData currentGenerationData;
 
 	void Start ()
 	{
 		JointPool = new PrefabPool<OrganismJoint> (transform, jointPrefab, 600, 50);
 		MusclePool = new PrefabPool<OrganismMuscle> (transform, musclePrefab, 400, 50);
-		OrganismPool = new PrefabPool<Organism> (transform, organismPrefab, 200, 100);
 
 		spawnGroups = new Dictionary<string, Transform> ();
-	    outputBuilder = new StringBuilder();
-        Simulate(null);
+        StartSimulation();
+	}
+	void StartSimulation(){
+		if (Organisms != null) {
+			for (int i = 0; i < Organisms.Count; i++) {
+				Destroy (Organisms [i].gameObject);
+			}
+		}
+		Organisms = new List<Organism> ();
+		for(int i = 0; i < ammount; i++){
+			GameObject g = Instantiate<GameObject> (organismPrefab);
+			g.transform.position = transform.position;
+			g.GetComponent<UnityEngine.Rendering.SortingGroup> ().sortingOrder = i;
+			Organisms.Add (g.GetComponent<Organism> ());
+		}
+		Simulate (null);
 	}
 
-    void OnDestroy()
+    void EndGeneration()
     {
-        File.WriteAllText(Application.dataPath + "/generationData.txt", outputBuilder.ToString());
-    }
-
-    void EndSimulation()
-    {
-        List<Organism> remaining = Organisms.OrderByDescending(x => x.MaxDistance)
+		List<Organism> remaining = Organisms.OrderByDescending(x => x.MaxDistance)
             .Take(Mathf.RoundToInt(survivors * ammount))
-            .ToList();
+			.ToList();
 
-        var builder = new StringBuilder();
-        for (int i = 0; i < remaining.Count; i++)
-        {
-            builder.Append(remaining[i].MaxDistance+"\t");
-        }
-        outputBuilder.AppendLine(builder.ToString());
-		if (onRestartSimulation != null)
-			onRestartSimulation ();
-        Simulate(remaining);
+		currentGenerationData.MaxDistance = remaining [0].MaxDistance;
+		currentGenerationData.SetDistances (Organisms);
+		currentGenerationData.SetSurvivors (remaining);
+
+		for (int i = 0; i < Organisms.Count; i++) {
+			Organisms [i].Kill ();
+		}
+
+		Simulate(currentGenerationData.GetSurvivors());
     }
 
-    public void Simulate(List<Organism> parents)
+	public void Simulate(OrganismSetup[] parents)
     {
-        List<Organism> newOrganisms = new List<Organism>();
+		currentGenerationData = new GenerationData (ammount);
+
         for (int i = 0; i < ammount; i++)
         {
             OrganismSetup setup;
@@ -80,24 +87,17 @@ public class OrganismManager : MonoBehaviour
             }
             else
             {
-				setup = randomizer.Randomize(parents[Random.Range(0, parents.Count)].setup);
+				setup = randomizer.Randomize(parents[Random.Range(0, parents.Length)]);
             }
 
-            newOrganisms.Add(
-				SpawnOrganism(transform.position, setup, i)
-                );
+			currentGenerationData.organisms [i] = setup;
+            
+			SpawnOrganism (transform.position, setup, i);
         }
 
-        if (Organisms != null)
-        {
-            for (int i = 0; i < Organisms.Count; i++)
-            {
-				Organisms [i].Kill ();
-            }
-        }
-        Organisms = newOrganisms;
-
-        Invoke("EndSimulation", simulationTime);
+		if (onRestartSimulation != null)
+			onRestartSimulation ();
+		Invoke("EndGeneration", simulationTime);
     }
 
 	private Transform GetOrganismFamilyGroup(OrganismSetup setup){
@@ -112,11 +112,9 @@ public class OrganismManager : MonoBehaviour
 		}
 	}
 
-	public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup, int zIndex = 0)
+	public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup, int index)
     {
-		//GameObject g = new GameObject("Organism "+setup.method);
-        //Organism organism = g.AddComponent<Organism>();
-		Organism organism = OrganismPool.Take();
+		Organism organism = Organisms [index];
 		organism.setup = setup;
 		organism.Spawn (pos);
 		organism.transform.parent = GetOrganismFamilyGroup (setup);

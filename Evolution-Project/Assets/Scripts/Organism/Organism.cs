@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class Organism : MonoBehaviour, IPoolBehaviour
+public class Organism : MonoBehaviour
 {
     public OrganismSetup setup;
     public List<OrganismJoint> joints;
@@ -20,16 +20,6 @@ public class Organism : MonoBehaviour, IPoolBehaviour
 		muscles = new List<OrganismMuscle> ();
     }
 
-	public void Dettach(){
-		MaxDistance = 0;
-		joints.Clear ();
-		muscles.Clear ();
-		setup = null;
-	}
-	public void Process(){
-
-	}
-
 	public void Kill(){
 		for (int i = 0; i < joints.Count; i++) {
 			OrganismManager.JointPool.Return (joints[i]);
@@ -37,7 +27,10 @@ public class Organism : MonoBehaviour, IPoolBehaviour
 		for (int i = 0; i < muscles.Count; i++) {
 			OrganismManager.MusclePool.Return (muscles[i]);
 		}
-		OrganismManager.OrganismPool.Return (this);
+		MaxDistance = 0;
+		joints.Clear ();
+		muscles.Clear ();
+		setup = null;
 	}
 
 	public void Spawn(Vector3 pos){

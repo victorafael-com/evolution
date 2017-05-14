@@ -16,8 +16,11 @@ public class OrganismManager : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject jointPrefab;
     [SerializeField] private GameObject musclePrefab;
+	[SerializeField] private GameObject organismPrefab;
 	public static PrefabPool<OrganismJoint> JointPool;
 	public static PrefabPool<OrganismMuscle> MusclePool;
+	public static PrefabPool<Organism> OrganismPool;
+	public int maxOrganismCreatedPerFrame = 42;
 
 	[Header("Simulation")]
     public int ammount = 50;
@@ -36,6 +39,7 @@ public class OrganismManager : MonoBehaviour
 	{
 		JointPool = new PrefabPool<OrganismJoint> (transform, jointPrefab, 600, 50);
 		MusclePool = new PrefabPool<OrganismMuscle> (transform, musclePrefab, 400, 50);
+		OrganismPool = new PrefabPool<Organism> (transform, organismPrefab, 200, 100);
 
 		spawnGroups = new Dictionary<string, Transform> ();
 	    outputBuilder = new StringBuilder();
@@ -110,8 +114,9 @@ public class OrganismManager : MonoBehaviour
 
 	public Organism SpawnOrganism(Vector3 pos, OrganismSetup setup, int zIndex = 0)
     {
-		GameObject g = new GameObject("Organism "+setup.method);
-        Organism organism = g.AddComponent<Organism>();
+		//GameObject g = new GameObject("Organism "+setup.method);
+        //Organism organism = g.AddComponent<Organism>();
+		Organism organism = OrganismPool.Take();
 		organism.setup = setup;
 		organism.Spawn (pos);
 		organism.transform.parent = GetOrganismFamilyGroup (setup);

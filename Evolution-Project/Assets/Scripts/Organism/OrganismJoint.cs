@@ -42,6 +42,8 @@ public class OrganismJoint : MonoBehaviour, IPoolBehaviour
 	    ColorManager.GetJointColors(this, frictionDisplay, weightDisplay, bouncinessDisplay);
 		bouncinessDisplay.transform.parent.localScale = Vector3.one * bounciness;
 
+		transform.localScale = Vector3.one * size;
+
 		PhysicsMaterial2D mat = new PhysicsMaterial2D();
 		mat.friction = friction;
 		mat.bounciness = bounciness;

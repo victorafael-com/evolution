@@ -28,6 +28,7 @@ public class OrganismMuscle : MonoBehaviour, IPoolBehaviour
 	public void Dettach(){
 		joint.enabled = false;
 		Destroy (joint);
+		joint = null;
 	}
 
 	public void Process()
@@ -55,6 +56,8 @@ public class OrganismMuscle : MonoBehaviour, IPoolBehaviour
 
     public void Update()
     {
+		if (joint == null)
+			return;
         t += Time.deltaTime;
         if (contracted && t > activeTime){
 			t = 0;//-= activeTime;
